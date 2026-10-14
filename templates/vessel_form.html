@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Register vessel{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">VESSEL REGISTER</div><h1>Register a vessel</h1><p>Enter the known vessel and voyage information.</p></div><a class="btn btn-outline-primary" href="{{ url_for('vessels') }}">← Back to vessels</a></div>
+<form method="post" class="panel-card form-panel"><div class="form-section-title">Vessel information</div><div class="row g-3">
+<div class="col-md-6"><label class="form-label">Vessel name *</label><input class="form-control" name="name" required></div>
+<div class="col-md-6"><label class="form-label">IMO / unique identifier</label><input class="form-control" name="imo_number" placeholder="Must be unique if entered"></div>
+<div class="col-md-6"><label class="form-label">Voyage number</label><input class="form-control" name="voyage_number"></div>
+<div class="col-md-6"><label class="form-label">Expected arrival (ETA) *</label><input class="form-control" type="datetime-local" name="eta" required></div>
+<div class="col-md-6"><label class="form-label">Expected departure (ETD)</label><input class="form-control" type="datetime-local" name="etd"></div>
+<div class="col-md-6"><label class="form-label">Estimated berth service (hours)</label><input class="form-control" type="number" name="required_berth_hours" min="1" value="8" required></div>
+<div class="col-md-6"><label class="form-label">Priority</label><select class="form-select" name="priority">{% for s in ['Normal','High','Urgent'] %}<option>{{ s }}</option>{% endfor %}</select></div>
+<div class="col-md-6"><label class="form-label">Initial status</label><select class="form-select" name="status">{% for s in ['Expected','Waiting','At berth','Loading','Unloading'] %}<option>{{ s }}</option>{% endfor %}</select></div>
+<div class="col-12"><label class="form-label">Notes</label><textarea class="form-control" name="notes" rows="3"></textarea></div>
+</div><div class="form-actions"><button class="btn btn-primary">Save vessel</button><a class="btn btn-light" href="{{ url_for('vessels') }}">Cancel</a></div></form>
+{% endblock %}

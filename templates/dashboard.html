@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">OPERATIONS OVERVIEW</div><h1>Port intelligence dashboard</h1><p>Monitor vessel activity, container flows, and logistics resources.</p></div><div class="heading-actions"><a class="btn btn-outline-primary" href="{{ url_for('analytics') }}">View analytics ↗</a><a class="btn btn-primary" href="{{ url_for('vessel_new') }}">＋ Register vessel</a></div></div>
+<div class="notice-strip"><span>ⓘ</span><div><strong>Decision-support prototype</strong><small>Recommendations must be reviewed by authorized port personnel. Demo records are fictional.</small></div></div>
+<div class="row g-3 metric-grid">
+  <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>REGISTERED VESSELS</span><span class="metric-icon">◈</span></div><div class="metric-number">{{ vessel_count }}</div><div class="metric-caption">All vessel records</div></div></div>
+  <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>CONTAINERS</span><span class="metric-icon">▤</span></div><div class="metric-number">{{ container_count }}</div><div class="metric-caption">Recorded cargo units</div></div></div>
+  <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>VESSELS TO REVIEW</span><span class="metric-icon amber">◷</span></div><div class="metric-number">{{ waiting_vessels }}</div><div class="metric-caption">Expected or waiting</div></div></div>
+  <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>TRUCK APPOINTMENTS</span><span class="metric-icon green">⇄</span></div><div class="metric-number">{{ truck_count }}</div><div class="metric-caption">Currently scheduled</div></div></div>
+</div>
+<div class="row g-3 mt-1">
+  <div class="col-xl-8"><div class="panel-card h-100"><div class="panel-heading"><div><h2>Upcoming vessel calls</h2><p>Expected arrival and current status</p></div><a href="{{ url_for('vessels') }}">View all →</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>VESSEL / VOYAGE</th><th>EXPECTED ARRIVAL</th><th>PRIORITY</th><th>STATUS</th></tr></thead><tbody>
+    {% for v in vessels %}<tr><td><strong>{{ v.name }}</strong><small class="table-sub">{{ v.voyage_number or 'Voyage not set' }}</small></td><td>{{ v.eta.strftime('%d %b, %H:%M') }}</td><td><span class="priority priority-{{ v.priority|lower }}">{{ v.priority }}</span></td><td><span class="status-badge">{{ v.status }}</span></td></tr>{% else %}<tr><td colspan="4" class="empty-state">No vessel records yet. Register the first vessel to get started.</td></tr>{% endfor %}
+    </tbody></table></div></div></div>
+  <div class="col-xl-4"><div class="panel-card h-100"><div class="panel-heading"><div><h2>Yard utilization</h2><p>Current recorded storage use</p></div></div><div class="yard-summary"><div class="yard-big">{{ yard_pct }}<small>%</small></div><div class="muted">{{ yard_used }} of {{ yard_total }} slots occupied</div><div class="progress mt-3"><div class="progress-bar" style="width: {{ yard_pct }}%"></div></div><div class="yard-legend"><span><i class="legend-used"></i> Occupied</span><span><i class="legend-free"></i> Available</span></div><a class="btn btn-outline-primary w-100 mt-4" href="{{ url_for('yard') }}">Manage yard locations</a></div></div></div>
+</div>
+<div class="row g-3 mt-1"><div class="col-xl-7"><div class="panel-card"><div class="panel-heading"><div><h2>Operational alerts</h2><p>Items requiring attention</p></div><a href="{{ url_for('alerts') }}">All alerts →</a></div>
+{% for a in alerts %}<div class="alert-row"><span class="alert-marker marker-{{ a.severity|lower }}"></span><div class="flex-grow-1"><strong>{{ a.title }}</strong><p>{{ a.message }}</p><small>{{ a.created_at.strftime('%d %b %Y, %H:%M') }}</small></div><span class="severity">{{ a.severity }}</span></div>{% else %}<div class="empty-state">No open alerts.</div>{% endfor %}
+</div></div><div class="col-xl-5"><div class="panel-card"><div class="panel-heading"><div><h2>Truck appointments</h2><p>Next scheduled gate activities</p></div><a href="{{ url_for('trucks') }}">Manage →</a></div>
+{% for a in appointments %}<div class="appointment-row"><div class="appointment-date"><strong>{{ a.appointment_time.strftime('%d') }}</strong><small>{{ a.appointment_time.strftime('%b') }}</small></div><div><strong>{{ a.truck.registration_number }}</strong><p>{{ a.purpose }}{% if a.container %} · {{ a.container.container_number }}{% endif %}</p></div><time>{{ a.appointment_time.strftime('%H:%M') }}</time></div>{% else %}<div class="empty-state">No appointments scheduled.</div>{% endfor %}
+</div></div></div>
+{% endblock %}

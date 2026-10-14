@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Vessels{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">WATERSIDE OPERATIONS</div><h1>Vessel management</h1><p>Maintain vessel calls, voyage details, and arrival information.</p></div><a class="btn btn-primary" href="{{ url_for('vessel_new') }}">＋ Register vessel</a></div>
+<div class="panel-card"><div class="panel-heading"><div><h2>Vessel register</h2><p>{{ records|length }} vessel record(s)</p></div></div><div class="table-responsive"><table class="table align-middle"><thead><tr><th>VESSEL</th><th>IMO / VOYAGE</th><th>ETA</th><th>ETD</th><th>PRIORITY</th><th>STATUS</th><th>UPDATE</th></tr></thead><tbody>
+{% for v in records %}<tr><td><strong>{{ v.name }}</strong><small class="table-sub">{{ v.required_berth_hours }} estimated berth hours</small></td><td>{{ v.imo_number or '—' }}<small class="table-sub">{{ v.voyage_number or '—' }}</small></td><td>{{ v.eta.strftime('%d %b %Y, %H:%M') }}</td><td>{{ v.etd.strftime('%d %b %Y, %H:%M') if v.etd else 'Not set' }}</td><td><span class="priority priority-{{ v.priority|lower }}">{{ v.priority }}</span></td><td><span class="status-badge">{{ v.status }}</span></td><td><form class="d-flex gap-1" method="post" action="{{ url_for('vessel_status', item_id=v.id) }}"><select class="form-select form-select-sm" name="status">{% for s in ['Expected','Waiting','At berth','Loading','Unloading','Departed','Cancelled'] %}<option {% if s==v.status %}selected{% endif %}>{{ s }}</option>{% endfor %}</select><button class="btn btn-sm btn-outline-primary">Save</button></form></td></tr>{% else %}<tr><td colspan="7" class="empty-state">No vessels registered.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

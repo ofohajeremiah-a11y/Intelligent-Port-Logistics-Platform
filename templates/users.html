@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}User Administration{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">ACCESS CONTROL</div><h1>User administration</h1><p>Create accounts and assign a role appropriate to each staff function.</p></div></div>
+<div class="row g-3"><div class="col-lg-5"><form method="post" class="panel-card form-panel"><div class="panel-heading"><div><h2>Create user</h2><p>Use a unique username and a strong password.</p></div></div><label class="form-label">Username</label><input class="form-control mb-3" name="username" required><label class="form-label">Temporary password (minimum 10 characters)</label><input class="form-control mb-3" name="password" type="password" minlength="10" required><label class="form-label">Role</label><select class="form-select mb-4" name="role">{% for role in roles %}<option>{{ role }}</option>{% endfor %}</select><button class="btn btn-primary">Create account</button></form></div>
+<div class="col-lg-7"><div class="panel-card"><div class="panel-heading"><div><h2>Registered users</h2><p>{{ records|length }} account(s)</p></div></div><div class="table-responsive"><table class="table"><thead><tr><th>USERNAME</th><th>ROLE</th><th>ACCOUNT</th></tr></thead><tbody>{% for u in records %}<tr><td><strong>{{ u.username }}</strong></td><td>{{ u.role }}</td><td><span class="status-badge">{{ 'Active' if u.active else 'Inactive' }}</span></td></tr>{% endfor %}</tbody></table></div></div></div></div>
+{% endblock %}

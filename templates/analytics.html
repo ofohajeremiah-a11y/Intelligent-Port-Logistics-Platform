@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Prediction & Analytics{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">DATA & PERFORMANCE</div><h1>Prediction & analytics</h1><p>Review recorded movements and a simple baseline estimate of container flow.</p></div></div>
+<div class="notice-strip"><span>ⓘ</span><div><strong>Forecasting status: baseline prototype</strong><small>The current estimate is a simple average of recorded movements per date. It is not a validated machine-learning forecast and should not be treated as a prediction of actual port traffic.</small></div></div>
+<div class="row g-3"><div class="col-md-4"><div class="metric-card"><div class="metric-top"><span>RECORDED MOVEMENTS</span><span class="metric-icon">⇄</span></div><div class="metric-number">{{ total }}</div><div class="metric-caption">All container movement events</div></div></div><div class="col-md-4"><div class="metric-card"><div class="metric-top"><span>RELEASED / DEPARTED</span><span class="metric-icon green">✓</span></div><div class="metric-number">{{ released }}</div><div class="metric-caption">Containers in completed statuses</div></div></div><div class="col-md-4"><div class="metric-card"><div class="metric-top"><span>BASELINE FLOW</span><span class="metric-icon amber">⌁</span></div><div class="metric-number">{{ flow_estimate }}</div><div class="metric-caption">Average movements per recorded date</div></div></div></div>
+<div class="panel-card mt-4"><div class="panel-heading"><div><h2>Recorded container movements</h2><p>Count by date in the database</p></div></div><div class="chart-wrap"><canvas id="movementChart"></canvas></div>{% if not labels %}<div class="empty-state">No movement data available yet. Register containers or load the demo dataset.</div>{% endif %}</div>
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script>
+const labels = {{ labels|tojson }}; const values = {{ values|tojson }};
+if (labels.length) { new Chart(document.getElementById('movementChart'), {type:'line',data:{labels,datasets:[{label:'Recorded movements',data:values,tension:.3,fill:true,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});}
+</script>{% endblock %}

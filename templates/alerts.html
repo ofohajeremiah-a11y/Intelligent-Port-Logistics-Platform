@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Alerts{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">EXCEPTIONS & NOTICES</div><h1>Operational alerts</h1><p>Review issues and information notices recorded in the platform.</p></div></div>
+<div class="panel-card"><div class="panel-heading"><div><h2>Alert register</h2><p>Open alerts appear first</p></div></div>
+{% for a in records %}<div class="alert-row"><span class="alert-marker marker-{{ a.severity|lower }}"></span><div class="flex-grow-1"><strong>{{ a.title }}</strong><p>{{ a.message }}</p><small>{{ a.created_at.strftime('%d %b %Y, %H:%M') }}</small></div><div class="alert-actions"><span class="severity">{{ a.severity }}</span>{% if not a.resolved and current_user.role in ['Administrator','Port Operations Officer','Terminal/Logistics Officer'] %}<form method="post" action="{{ url_for('alert_resolve', item_id=a.id) }}"><button class="btn btn-sm btn-outline-primary">Mark resolved</button></form>{% elif a.resolved %}<span class="status-badge">Resolved</span>{% endif %}</div></div>{% else %}<div class="empty-state">No alerts recorded.</div>{% endfor %}
+</div>
+{% endblock %}
